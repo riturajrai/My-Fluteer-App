@@ -1,1 +1,36 @@
+name: iOS Build
+
+on:
+  push:
+    branches:
+      - main   # ya jo bhi tumhari branch hai
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0' # apni Flutter version likho
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Enable iOS platform
+        run: flutter create .
+
+      - name: Build iOS app
+        run: flutter build ipa --release
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: iOS-App
+          path: build/ios/ipa/*.ipa
 
